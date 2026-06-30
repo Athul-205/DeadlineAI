@@ -117,7 +117,19 @@ Generate your optimized daily schedule
 </p>
 """, unsafe_allow_html=True)
 
-if st.button("Generate My Day"):
+
+
+col1, col2, col3 = st.columns([1, 2, 1])
+
+with col2:
+    generate = st.button("🧠 Generate My Day", use_container_width=True)
+
+if generate:
+
+    conn = sqlite3.connect("database/tasks.db")
+    cursor = conn.cursor()
+
+    ...
 
     conn = sqlite3.connect("database/tasks.db")
     cursor = conn.cursor()

@@ -2,7 +2,8 @@ import streamlit as st
 import sqlite3
 from datetime import datetime, date
 from ai_agent import generate_schedule
-
+def format_time(t):
+    return datetime.strptime(t, "%H:%M:%S").strftime("%I:%M %p")
 st.set_page_config(
     page_title="DeadlineAI",
     page_icon="🤖",
@@ -90,11 +91,33 @@ st.markdown("""
     );
 }
 
+
 /* Main title */
 h1{
     color:white;
     text-align:center;
     font-size:45px;
+
+    text-shadow:
+    0 0 10px #8B5CF6,
+    0 0 25px #7C3AED,
+    0 0 40px #2563EB;
+
+    animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+
+from{
+    text-shadow:0 0 10px #8B5CF6;
+}
+
+to{
+    text-shadow:
+    0 0 25px #8B5CF6,
+    0 0 45px #2563EB;
+}
+
 }
 
 /* Subheaders */
@@ -121,16 +144,38 @@ div[data-testid="metric-container"]{
 
 /* Buttons */
 .stButton > button{
+
     width:100%;
+
     border-radius:12px;
-    background:#2563eb;
+
+    background:linear-gradient(
+        90deg,
+        #7C3AED,
+        #8B5CF6,
+        #2563EB
+    );
+
+    background-size:250% 250%;
+
     color:white;
+
     border:none;
+
     font-weight:bold;
+
+    transition:.35s;
+
 }
 
 .stButton > button:hover{
-    background:#1d4ed8;
+
+    background-position:right center;
+
+    transform:scale(1.03);
+
+    box-shadow:0 0 20px rgba(139,92,246,.45);
+
 }
 
 /* Info boxes */
@@ -140,6 +185,21 @@ div[data-testid="stAlert"]{
 hr{
     border:1px solid #243153;
 }
+/* Card Hover Animation */
+
+div[data-testid="stVerticalBlock"] > div{
+
+    transition:all .25s ease;
+
+}
+
+div[data-testid="stVerticalBlock"] > div:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 0 25px rgba(139,92,246,.35);
+
+}           
 </style>
 """, unsafe_allow_html=True)
 
@@ -164,6 +224,30 @@ st.markdown("---")
 # ==========================
 
 now = datetime.now()
+
+# Greeting
+hour = now.hour
+
+if hour < 12:
+    greeting = "🌅 Good Morning"
+elif hour < 17:
+    greeting = "☀️ Good Afternoon"
+elif hour < 21:
+    greeting = "🌆 Good Evening"
+else:
+    greeting = "🌙 Good Night"
+
+st.markdown(
+    f"""
+    <h2 style="
+        text-align:center;
+        color:#A78BFA;
+        margin-bottom:20px;">
+        {greeting}
+    </h2>
+    """,
+    unsafe_allow_html=True
+)
 
 col1, col2 = st.columns(2)
 
@@ -229,11 +313,10 @@ else:
 
     for row in rows:
 
-        st.container(border=True)
+     with st.container(border=True):
 
-        st.write(f"### {row[0]}")
-        st.write(f"🕒 {row[1]} - {row[2]}")
-
+        st.write(f"### 📅 {row[0]}")
+        st.write(f"🕒 {format_time(row[1])} - {format_time(row[2])}")
 st.markdown("---")
 
 # ==========================

@@ -1,4 +1,7 @@
 import os
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 import google.generativeai as genai
 from dotenv import load_dotenv
 
@@ -11,12 +14,21 @@ model = genai.GenerativeModel("gemini-2.5-flash")
 
 def generate_schedule(data):
 
+    now = datetime.now(ZoneInfo("Asia/Kolkata"))
+
+    current_date = now.strftime("%d-%m-%Y")
+    current_time = now.strftime("%I:%M %p")
+
     prompt = f"""
+
 You are DeadlineAI, an intelligent AI productivity planner.
 
 Below is today's information.
 
 {data}
+
+Current Date: {current_date}
+Current Time: {current_time} (Asia/Kolkata)
 
 YOUR JOB
 
@@ -24,7 +36,9 @@ Create a complete schedule for today.
 
 STRICT RULES
 
-1. Never schedule anything before the current time.
+1. Never schedule anything before the Current Time provided above.
+Use the Current Date and Current Time (Asia/Kolkata) exactly as provided.
+Never assume a different date or timezone.
 
 2. Never schedule study sessions during commitment times.
 
